@@ -1,0 +1,2 @@
+Video updates are handled with 'artisan schedule:work' (or crontab) every five minutes
+They must be manually started
