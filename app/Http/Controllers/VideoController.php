@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Video;
+use DateTime;
 
 class VideoController extends Controller
 {
@@ -22,6 +23,7 @@ class VideoController extends Controller
             $video->watched = true;
             $video->save();
         }
+        
         $invidious_instance = 'https://invidious.snopyta.org';
 
         return view('videos.show', [
@@ -32,7 +34,7 @@ class VideoController extends Controller
 
     public function latest() {
         return view('videos.latest', [
-            'videos' => $this->_videos->latest()
+            'videos' => $this->_videos->latest(),
         ]);
     }
 

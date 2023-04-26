@@ -3,16 +3,19 @@
 namespace App\Http\Controllers;
 
 use App\Jobs\AddChannel;
-use App\Jobs\UpdateAllChannelsVideos;
+use App\Jobs\LoadChannelIcon;
 use App\Models\Channel;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class ChannelController extends Controller
 {
     protected $_channel;
+    protected $invidious_instance;
     
     public function __construct() {
         $this->_channel = new Channel();
+        $this->invidious_instance = 'https://invidious.snopyta.org';
     }
 
     public function index() {
@@ -31,6 +34,7 @@ class ChannelController extends Controller
         return view('channels.show', [
             'channel' => $channel,
             'videos' => $channel->videos,
+            'invidious_link' => $this->invidious_instance . '/channel/' . $channel->channel_id,
         ]);
     }
 
@@ -84,6 +88,6 @@ class ChannelController extends Controller
             AddChannel::dispatch($csv_file[$i][0]);
         }
 
-        return redirect(route('channel.index'))->with('channelMessage', 'Loading channels... Refresh the page to see them');
+        return redirect(route('channel.index'))->with('channelMessage', 'Loading channels... Refresh the page to see them.');
     }
 }

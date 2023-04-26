@@ -21,7 +21,7 @@ return new class extends Migration
             $table->longText('description');
             $table->string('published');
             $table->boolean('watched')->default(false);
-            $table->foreign('channel_id')->references('id')->on('channels');
+            $table->foreign('channel_id')->references('id')->on('channels')->onDelete('cascade');
             $table->timestamps();
         });
     }

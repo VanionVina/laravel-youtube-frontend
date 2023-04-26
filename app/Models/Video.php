@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Jobs\LoadVideoImage;
+use DateTime;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
@@ -49,5 +50,19 @@ class Video extends Model
 
     public function markAllAsWatched() {
         Video::where('watched', false)->update(['watched' => true]);
+    }
+
+    public function getDateDifference() {
+        $parsed_date = DateTime::createFromFormat('Y-m-d H:i:s', str_replace('T', ' ', substr($this->published, 0, 19)));
+        $current_date = date_create(date('m/d/Y h:i:s a', time()));
+        $date_diff = date_diff($parsed_date, $current_date);
+
+        if ($date_diff->days < 1) {
+            return $date_diff->format('%h hours ago');
+        } elseif ($date_diff->days == 1) {
+            return $date_diff->format('%a day ago');
+        }
+
+        return $date_diff->format('%a days ago');
     }
 }

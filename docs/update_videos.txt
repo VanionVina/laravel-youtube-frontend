@@ -1,2 +1,3 @@
-Video updates are handled with 'artisan schedule:work' (or crontab) every five minutes
+Channel updates and video images downloads are handled with jobs, so 'artisan queue:work' (or crontab) are needed
+Videos can be updated automatically (every 5 minutes) with 'artisan schedule:work' (or crontab)
 They must be manually started

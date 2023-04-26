@@ -1,4 +1,4 @@
-# laravel-youtube-frontend
+# laravel-youtube-subscriptions
 Using invidious rss
 <p>You can add any channel, just put its id in search bar</p>
 

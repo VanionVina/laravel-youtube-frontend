@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('channel_id')->unique();
             $table->string('name');
             $table->string('icon_url');
+            $table->string('icon_name');
             $table->timestamps();
         });
     }
