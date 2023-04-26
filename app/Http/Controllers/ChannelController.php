@@ -2,8 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Jobs\AddChannel;
+use App\Jobs\UpdateAllChannelsVideos;
 use App\Models\Channel;
-use App\Models\Video;
 use Illuminate\Http\Request;
 
 class ChannelController extends Controller
@@ -14,13 +15,41 @@ class ChannelController extends Controller
         $this->_channel = new Channel();
     }
 
+    public function index() {
+        $channels = Channel::orderBy('name')->get();
+        return view('channels.index', [
+            'channels' => $channels,
+        ]);
+    }
+
     public function show($channel_id) {
         $channel = Channel::Where('channel_id', $channel_id)->first();
+        if ($channel === null) {
+            return redirect(route('index'));
+        }
 
         return view('channels.show', [
             'channel' => $channel,
-            'videos' => $channel->videos
+            'videos' => $channel->videos,
         ]);
+    }
+
+    public function updateVideos($channel_id) {
+        $channel = Channel::Where('channel_id', $channel_id)->first();
+        if ($channel === null) {
+            return redirect(route('index'));
+        }
+
+        if($this->_channel->updateVideos($channel_id))
+        {
+            return redirect(route('channel.show', $channel_id))->with('channelMessage', 'Images are loading. Please refresh the page to see them');
+        }
+        return redirect(route('channel.show', $channel_id))->with('channelMessage', 'No new videos');
+    }
+
+    public function updateAll() {
+        $this->_channel->updateAllChannelsVideos();
+        return redirect(route('video.newVideos'))->with('videoMessage', 'Loading RSS feeds... Check this page later');
     }
 
     public function search(Request $request) {
@@ -30,12 +59,31 @@ class ChannelController extends Controller
 
         $channel = $this->_channel->getOrCreateChannelWithVideos($request->search);
         if ($channel === null) {
-            return redirect(route('index'))->with('message', 'Incorrect channel id');
+            return redirect(route('index'))->with('errorMessage', 'Incorrect channel id');
         }
 
-        return view('channels.show', [
-            'channel' => $channel,
-            'videos' => $channel->videos
+        return redirect(route('channel.show', $channel->channel_id))->with('channelMessage', 'Images are loading. Please refresh the page to see them');
+    }
+
+    public function loadChannelsFromFile() {
+        return view('channels.loadChannelsFromFile');
+    }
+
+    public function loadChannelsFromFilePost(Request $request) {
+        $request->validate([
+            'file' => 'mimes:csv|required'
         ]);
+
+        $file_handle = fopen($request->file, 'r');
+        while (!feof($file_handle)) {
+            $csv_file[] = fgetcsv($file_handle, 0, ',');
+        }
+        fclose($file_handle);
+
+        for ($i=1; $i<count($csv_file)-1;$i++) {
+            AddChannel::dispatch($csv_file[$i][0]);
+        }
+
+        return redirect(route('channel.index'))->with('channelMessage', 'Loading channels... Refresh the page to see them');
     }
 }

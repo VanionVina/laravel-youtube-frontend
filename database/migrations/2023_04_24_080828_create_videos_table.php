@@ -16,9 +16,11 @@ return new class extends Migration
             $table->unsignedBigInteger('channel_id');
             $table->string('video_id')->required;
             $table->string('title');
-            $table->string('image_url');
+            $table->string('image_name');
+            $table->string('image_path');
             $table->longText('description');
             $table->string('published');
+            $table->boolean('watched')->default(false);
             $table->foreign('channel_id')->references('id')->on('channels');
             $table->timestamps();
         });
