@@ -57,21 +57,18 @@ class Channel extends Model
         return $channel;
     }
 
-    public function updateVideos($channel_id) {
-        // channel can't be null here
-        $channel = Channel::where('channel_id', $channel_id)->first();
-
+    public function updateVideos() {
         $invidious_instance = 'https://invidious.snopyta.org' . '/feed/channel/';
-        $feed_url = $invidious_instance . $channel_id;
+        $feed_url = $invidious_instance . $this->channel_id;
 
         $feeds = @simplexml_load_file($feed_url);
 
         $new_videos_available = false;
 
         foreach($feeds->entry as $entry) {
-            $video = $channel->videos->Where('video_id', substr($entry->id, 9, 11))->first();
+            $video = $this->videos->Where('video_id', substr($entry->id, 9, 11))->first();
             if ($video === null) {
-                $this->_video->createVideo($entry, $channel->id);
+                $this->_video->createVideo($entry, $this->id);
                 $new_videos_available = true;
             }
         }
@@ -80,9 +77,9 @@ class Channel extends Model
     }
 
     public function updateAllChannelsVideos() {
-        $channels = Channel::get('channel_id');
+        $channels = Channel::get();
         foreach($channels as $channel) {
-            UpdateChannelVideos::dispatch($channel->channel_id);
+            UpdateChannelVideos::dispatch($channel);
         }
     }
 }

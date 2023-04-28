@@ -48,10 +48,16 @@ class Video extends Model
             return $video;
     }
 
+    public function markAsWatched() {
+        $this->watched = true;
+        $this->save();
+    }
+
     public function markAllAsWatched() {
         Video::where('watched', false)->update(['watched' => true]);
     }
 
+    // Should change this to diffForHumans()
     public function getDateDifference() {
         $parsed_date = DateTime::createFromFormat('Y-m-d H:i:s', str_replace('T', ' ', substr($this->published, 0, 19)));
         $current_date = date_create(date('m/d/Y h:i:s a', time()));

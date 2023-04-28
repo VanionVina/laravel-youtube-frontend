@@ -4,7 +4,6 @@ namespace App\Jobs;
 
 use App\Models\Channel;
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldBeUnique;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
@@ -17,10 +16,10 @@ class UpdateChannelVideos implements ShouldQueue
     /**
      * Create a new job instance.
      */
-    protected $channel_id;
-    public function __construct($channel_id)
+    protected $channel;
+    public function __construct(Channel $channel)
     {
-        $this->channel_id = $channel_id;
+        $this->channel = $channel;
     }
 
     /**
@@ -28,7 +27,9 @@ class UpdateChannelVideos implements ShouldQueue
      */
     public function handle(): void
     {
-        $_channel = new Channel();
-        $_channel->updateVideos($this->channel_id);
+        // $_channel = new Channel();
+        // $_channel->updateVideos($this->channel);
+
+        $this->channel->updateVideos();
     }
 }

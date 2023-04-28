@@ -10,7 +10,7 @@
             <input type="file" name="file">
         </label>
         <br>
-        <button type="submit" style="width:200px">Export</button>
+        <button type="submit" style="width:200px">Import</button>
     </form>
 </div>
 

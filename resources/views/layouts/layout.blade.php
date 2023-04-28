@@ -24,7 +24,7 @@
             </li>
         </ul>
         <ul>
-            <li><a href="{{route('channel.loadFromFile')}}">Export YouTube subscription</a></li>
+            <li><a href="{{route('channel.loadFromFile')}}">Import YouTube subscription</a></li>
         </ul>
     </nav>
     <main class="container-fluid" style="padding-top: 0px">

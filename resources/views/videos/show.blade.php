@@ -14,7 +14,7 @@
 
     <div style="display:grid;grid-template-columns: 270px 1fr">
         <div>
-            <a href="{{ route('channel.show', $video->channel->channel_id) }}">
+            <a href="{{ route('channel.show', $video->channel->id) }}">
             <div style="block;margin-bottom:20px">
                 <div style="margin-bottom:10px;text-align:center"><span style="font-size:20px">{{$video->channel->name}}</span></div>
                 <div>

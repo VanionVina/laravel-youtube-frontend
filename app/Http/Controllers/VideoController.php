@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\Video;
-use DateTime;
 
 class VideoController extends Controller
 {
@@ -13,15 +12,9 @@ class VideoController extends Controller
         $this->_videos = new Video();
     }
 
-    public function show($video_id) {
-        $video = Video::Where('video_id', $video_id)->first();
-        if ($video === null) {
-            return redirect(route('index'));
-        }
-
+    public function show(Video $video) {
         if (!$video->watched) {
-            $video->watched = true;
-            $video->save();
+            $video->markAsWatched();
         }
         
         $invidious_instance = 'https://invidious.snopyta.org';
@@ -33,19 +26,22 @@ class VideoController extends Controller
     }
 
     public function latest() {
-        return view('videos.latest', [
-            'videos' => $this->_videos->latest(),
-        ]);
+        $videos = $this->_videos->latest();
+        return view('videos.latest', compact('videos'));
     }
 
     public function newVideos() {
-        return view('videos.newVideos', [
-            'videos' => $this->_videos->unwachedVideos()
-        ]);
+        $videos = $this->_videos->unwachedVideos();
+        return view('videos.newVideos', compact('videos'));
     }
 
     public function markAllAsWatched() {
         $this->_videos->markAllAsWatched();
-        return redirect(route('video.newVideos'));
+        return redirect()->route('video.newVideos');
+    }
+
+    public function markAsWatched(Video $video) {
+        $video->markAsWatched();
+        return redirect()->route('video.newVideos');
     }
 }
